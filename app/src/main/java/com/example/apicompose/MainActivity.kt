@@ -89,6 +89,12 @@ fun postData() {
     val deskripsiProduk = remember {
         mutableStateOf(TextFieldValue())
     }
+    val hargaProduk = remember {
+        mutableStateOf(TextFieldValue())
+    }
+    val urlProduk = remember {
+        mutableStateOf(TextFieldValue())
+    }
     val response = remember {
         mutableStateOf("")
     }
@@ -150,6 +156,48 @@ fun postData() {
             // on below line we ar adding single line to it.
             singleLine = true,
         )
+        //on below line we are adding spacer
+        Spacer(modifier = Modifier.height(5.dp))
+        // on below line we are creating a text field for our email.
+        TextField(
+            // on below line we are specifying value for our email text field.
+            value = hargaProduk.value,
+            // on below line we are adding on value change for text field.
+            onValueChange = { hargaProduk.value = it },
+            // on below line we are adding place holder as text as "Enter your email"
+            placeholder = { Text(text = "Enter harga prod") },
+            // on below line we are adding modifier to it
+            // and adding padding to it and filling max width
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            // on below line we are adding text style
+            // specifying color and font size to it.
+            textStyle = TextStyle(color = Color.Black, fontSize = 15.sp),
+            // on below line we are adding single line to it.
+            singleLine = true,
+        )
+        //on below line we are adding spacer
+        Spacer(modifier = Modifier.height(5.dp))
+        // on below line we are creating a text field for our email.
+        TextField(
+            // on below line we are specifying value for our email text field.
+            value = urlProduk.value,
+            // on below line we are adding on value change for text field.
+            onValueChange = { urlProduk.value = it },
+            // on below line we are adding place holder as text as "Enter your email"
+            placeholder = { Text(text = "Enter url prod") },
+            // on below line we are adding modifier to it
+            // and adding padding to it and filling max width
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            // on below line we are adding text style
+            // specifying color and font size to it.
+            textStyle = TextStyle(color = Color.Black, fontSize = 15.sp),
+            // on below line we are adding single line to it.
+            singleLine = true,
+        )
         // on below line we are adding spacer
         Spacer(modifier = Modifier.height(10.dp))
         // on below line we are creating a button
@@ -157,7 +205,7 @@ fun postData() {
             onClick = {
                 // on below line we are calling make payment method to update data.
                 postDataUsingRetrofit(
-                    ctx, namaProduk, deskripsiProduk, response
+                    ctx, namaProduk, deskripsiProduk, hargaProduk, urlProduk, response
                 )
             },
             // on below line we are adding modifier to our button.
@@ -187,6 +235,8 @@ private fun postDataUsingRetrofit(
     ctx: Context,
     namaProduk: MutableState<TextFieldValue>,
     deskripsiProduk: MutableState<TextFieldValue>,
+    hargaProduk: MutableState<TextFieldValue>,
+    urlProduk: MutableState<TextFieldValue>,
     result: MutableState<String>
 ) {
     var url = "http://192.168.43.128:8000/api/"
@@ -202,7 +252,12 @@ private fun postDataUsingRetrofit(
     // below the line is to create an instance for our retrofit api class.
     val retrofitAPI = retrofit.create(RetrofitAPI::class.java)
     // passing data from our text fields to our model class.
-    val dataModel = DataModel(namaProduk.value.text, deskripsiProduk.value.text)
+    val dataModel = DataModel(
+        namaProduk.value.text,
+        deskripsiProduk.value.text,
+        hargaProduk.value.text,
+        urlProduk.value.text
+        )
     // calling a method to create an update and passing our model class.
     val call: Call<DataModel?>? = retrofitAPI.postData(dataModel)
     // on below line we are executing our method.
@@ -216,7 +271,7 @@ private fun postDataUsingRetrofit(
             // on below line we are getting our data from model class
             // and adding it to our string.
             val resp =
-                "Response Code : " + response.code() + "\n" + "Nama produk : " + model!!.nama_produk + "\n" + "Desk produk : " + model!!.deskripsi_produk
+                "Response Code : " + response.code() + "\n" + "Nama produk : " + model!!.nama_produk + "\n" + "Desk produk : " + model!!.deskripsi_produk + "\n" + "Harga produk : " + model!!.harga_produk + "\n" + "Url produk : " + model!!.url_produk
             // below line we are setting our string to our response.
             result.value = resp
         }
